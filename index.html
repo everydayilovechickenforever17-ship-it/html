@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Diary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Login Screen Styles */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 48px 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .login-header p {
+            color: #757575;
+            font-size: 15px;
+        }
+
+        .login-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn, .register-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 12px;
+        }
+
+        .login-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .register-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .register-btn:hover {
+            background: #f5f7ff;
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #757575;
+        }
+
+        .toggle-link {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Main App Styles */
+        .app-container {
+            display: none;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0 60px;
+            position: relative;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #f5f5f5;
+            color: #757575;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #e0e0e0;
+            color: #1a1a1a;
+        }
+
+        .profile-pic-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #999;
+            border: 3px solid #f5f5f5;
+        }
+
+        .upload-profile-btn {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #1a1a1a;
+            color: white;
+            border: 3px solid white;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .upload-profile-btn:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+
+        .diary-name {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+
+        .diary-name:hover {
+            color: #666;
+        }
+
+        .diary-subtitle {
+            color: #757575;
+            font-size: 14px;
+        }
+
+        .new-post-section {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 60px;
+        }
+
+        .new-post-section h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 14px 0;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            margin-bottom: 16px;
+            font-family: inherit;
+            background: transparent;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-bottom-color: #1a1a1a;
+        }
+
+        input[type="text"]::placeholder, textarea::placeholder {
+            color: #999;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #d0d0d0;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .image-upload-area:hover {
+            border-color: #1a1a1a;
+            background: #fafafa;
+        }
+
+        .image-upload-area-text {
+            color: #757575;
+            font-size: 14px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .post-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-btn:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        .post {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 60px;
+            position: relative;
+        }
+
+        .post:last-child {
+            border-bottom: none;
+        }
+
+        .post-title {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .post-subtitle {
+            font-size: 18px;
+            color: #757575;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #757575;
+            margin-bottom: 20px;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .author-pic {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .author-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .post-actions-top {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #757575;
+            transition: color 0.2s;
+            padding: 0;
+        }
+
+        .action-btn:hover {
+            color: #1a1a1a;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            max-height: 600px;
+            object-fit: cover;
+        }
+
+        .post-caption {
+            text-align: center;
+            padding: 8px 0 24px;
+            font-size: 14px;
+            color: #757575;
+            font-style: italic;
+        }
+
+        .post-content {
+            font-size: 18px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .download-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+
+        .download-btn:hover {
+            background: #5568d3;
+        }
+
+        .post-actions-bottom {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        /* Canvas untuk render */
+        #renderCanvas {
+            position: fixed;
+            top: -10000px;
+            left: -10000px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            .post-title {
+                font-size: 26px;
+            }
+
+            .post-content {
+                font-size: 16px;
+            }
+
+            .new-post-section {
+                padding: 24px;
+            }
+
+            .login-box {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-icon">📔</div>
+                <h1>My Diary</h1>
+                <p>Personal & Private Journal</p>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Masukkan username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Masukkan password">
+                </div>
+                <button class="login-btn" onclick="login()">Login</button>
+                <p class="toggle-text">
+                    Belum punya akun? <a class="toggle-link" onclick="showRegister()">Daftar di sini</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" style="display: none;">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="registerUsername" placeholder="Pilih username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" placeholder="Buat password">
+                </div>
+                <div class="input-group">
+                    <label>Konfirmasi Password</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="Ulangi password">
+                </div>
+                <button class="register-btn" onclick="register()">Buat Akun</button>
+                <p class="toggle-text">
+                    Sudah punya akun? <a class="toggle-link" onclick="showLogin()">Login di sini</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <div class="container">
+            <div class="header">
+                <button class="logout-btn" onclick="logout()">Logout</button>
+                <div class="profile-pic-container">
+                    <img id="profilePic" class="profile-pic" src="" alt="👤" onerror="this.style.content='👤'">
+                    <button class="upload-profile-btn" onclick="document.getElementById('profileUpload').click()">+</button>
+                    <input type="file" id="profileUpload" accept="image/*">
+                </div>
+                <h1 class="diary-name" contenteditable="true" id="diaryName">My Diary</h1>
+                <p class="diary-subtitle">Personal Journal</p>
+            </div>
+
+            <div class="new-post-section">
+                <h2>✍️ Tulis Cerita Baru</h2>
+                <input type="text" id="postTitle" placeholder="Judul cerita...">
+                <input type="text" id="postSubtitle" placeholder="Subtitle (opsional)">
+                <textarea id="postContent" placeholder="Ceritakan harimu..."></textarea>
+                <div class="image-upload-area" onclick="document.getElementById('postImageUpload').click()">
+                    <div class="image-upload-area-text">📷 Upload foto</div>
+                    <img id="postImagePreview" class="image-preview">
+                </div>
+                <input type="file" id="postImageUpload" accept="image/*">
+                <input type="text" id="postCaption" placeholder="Keterangan foto (opsional)">
+                <button class="post-btn" onclick="createPost()">Publish</button>
+            </div>
+
+            <div class="posts-container" id="postsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Canvas untuk render (hidden) -->
+    <canvas id="renderCanvas"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        let currentUser = null;
+        let posts = [];
+
+        // Check if user is logged in
+        function checkAuth() {
+            const loggedInUser = localStorage.getItem('currentUser');
+            if (loggedInUser) {
+                currentUser = loggedInUser;
+                showApp();
+                loadUserData();
+            }
+        }
+
+        // Show/Hide forms
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            hideMessages();
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            hideMessages();
+        }
+
+        function showApp() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+        }
+
+        function hideApp() {
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+
+        // Messages
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 3000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => successDiv.style.display = 'none', 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Register
+        function register() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerPasswordConfirm').value;
+
+            if (!username || !password || !confirmPassword) {
+                showError('Semua field harus diisi!');
+                return;
+            }
+
+            if (username.length < 3) {
+                showError('Username minimal 3 karakter!');
+                return;
+            }
+
+            if (password.length < 4) {
+                showError('Password minimal 4 karakter!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Password tidak cocok!');
+                return;
+            }
+
+            // Check if user exists
+            const users = JSON.parse(localStorage.getItem('diaryUsers') || '{}');
+            if (users[username]) {
+                showError('Username sudah digunakan!');
+                return;
+            }
+
+            // Save user
+            users[username] = {
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('diaryUsers', JSON.stringify(users));
+
+            showSuccess('Akun berhasil dibuat! Silakan login.');
+            setTimeout(() => {
+                showLogin();
+                document.getElementById('loginUsername').value = username;
+            }, 1500);
+        }
+
+        // Login
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showError('Username dan password harus diisi!');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('diaryUsers') || '{}');
+            
+            if (!users[username]) {
+                showError('Username tidak ditemukan!');
+                return;
+            }
+
+            if (users[username].password !== password) {
+                showError('Password salah!');
+                return;
+            }
+
+            // Login success
+            currentUser = username;
+            localStorage.setItem('currentUser', username);
+            showApp();
+            loadUserData();
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                hideApp();
+                showLogin();
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        // Load user data
+        function loadUserData() {
+            const userKey = `diary_${currentUser}`;
+            const userData = JSON.parse(localStorage.getItem(userKey) || '{}');
+
+            // Load profile picture
+            if (userData.profilePic) {
+                document.getElementById('profilePic').src = userData.profilePic;
+            }
+
+            // Load diary name
+            if (userData.diaryName) {
+                document.getElementById('diaryName').textContent = userData.diaryName;
+            } else {
+                document.getElementById('diaryName').textContent = currentUser + "'s Diary";
+            }
+
+            // Load posts
+            posts = userData.posts || [];
+            renderPosts();
+        }
+
+        // Save user data
+        function saveUserData() {
+            const userKey = `diary_${currentUser}`;
+            const userData = {
+                profilePic: document.getElementById('profilePic').src,
+                diaryName: document.getElementById('diaryName').textContent,
+                posts: posts
+            };
+            localStorage.setItem(userKey, JSON.stringify(userData));
+        }
+
+        // Profile picture upload
+        document.getElementById('profileUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePic').src = e.target.result;
+                    saveUserData();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save diary name
+        document.getElementById('diaryName').addEventListener('blur', function() {
+            saveUserData();
+        });
+
+        // Post image preview
+        document.getElementById('postImageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('postImagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function createPost() {
+            const title = document.getElementById('postTitle').value;
+            const subtitle = document.getElementById('postSubtitle').value;
+            const content = document.getElementById('postContent').value;
+            const caption = document.getElementById('postCaption').value;
+            const imagePreview = document.getElementById('postImagePreview');
+
+            if (!title && !content) {
+                alert('Judul atau isi cerita harus diisi!');
+                return;
+            }
+
+            const post = {
+                id: Date.now(),
+                title: title,
+                subtitle: subtitle,
+                content: content,
+                caption: caption,
+                image: imagePreview.style.display === 'block' ? imagePreview.src : null,
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+                timestamp: getTimeAgo(new Date())
+            };
+
+            posts.unshift(post);
+            saveUserData();
+
+            // Reset form
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postSubtitle').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('postCaption').value = '';
+            imagePreview.style.display = 'none';
+            imagePreview.src = '';
+            document.getElementById('postImageUpload').value = '';
+
+            renderPosts();
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+            if (seconds < 604800) return Math.floor(seconds / 86400) + ' days ago';
+            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function deletePost(id) {
+            if (confirm('Yakin ingin hapus cerita ini?')) {
+                posts = posts.filter(post => post.id !== id);
+                saveUserData();
+                renderPosts();
+            }
+        }
+
+        function sharePost(title) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: 'Baca ceritaku: ' + title
+                });
+            } else {
+                alert('Share feature tidak tersedia di browser ini');
+            }
+        }
+
+        // Download post sebagai gambar
+        async function downloadPost(postId) {
+            const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+            if (!postElement) return;
+
+            // Sembunyikan tombol delete & download sementara
+            const actionsBottom = postElement.querySelector('.post-actions-bottom');
+            const originalDisplay = actionsBottom.style.display;
+            actionsBottom.style.display = 'none';
+
+            try {
+                // Tambah loading indicator
+                const downloadBtn = postElement.querySelector('.download-btn');
+                const originalText = downloadBtn.textContent;
+                downloadBtn.textContent = 'Downloading...';
+                downloadBtn.disabled = true;
+
+                // Render ke canvas dengan kualitas tinggi
+                const canvas = await html2canvas(postElement, {
+                    scale: 2, // 2x resolution untuk kualitas lebih bagus
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    windowWidth: postElement.scrollWidth,
+                    windowHeight: postElement.scrollHeight
+                });
+
+                // Convert ke blob dan download
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const post = posts.find(p => p.id === postId);
+                    const filename = `diary-${post.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${Date.now()}.png`;
+                    
+                    link.href = url;
+                    link.download = filename;
+                    link.click();
+                    
+                    URL.revokeObjectURL(url);
+                    
+                    // Restore button
+                    downloadBtn.textContent = originalText;
+                    downloadBtn.disabled = false;
+                }, 'image/png', 1.0);
+
+            } catch (error) {
+                console.error('Error downloading post:', error);
+                alert('Gagal download. Coba lagi!');
+            } finally {
+                // Tampilkan kembali tombol actions
+                actionsBottom.style.display = originalDisplay;
+            }
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('postsContainer');
+            const diaryName = document.getElementById('diaryName').textContent;
+            const profilePic = document.getElementById('profilePic').src;
+
+            container.innerHTML = posts.map(post => `
+                <article class="post" data-post-id="${post.id}">
+                    <h1 class="post-title">${post.title || 'Untitled'}</h1>
+                    ${post.subtitle ? `<p class="post-subtitle">${post.subtitle}</p>` : ''}
+                    <div class="post-meta">
+                        <span>3 min read</span>
+                        <span>•</span>
+                        <span>${post.timestamp}</span>
+                    </div>
+                    <div class="post-author">
+                        <img class="author-pic" src="${profilePic}" alt="Profile" onerror="this.style.display='none'">
+                        <span class="author-name">${diaryName}</span>
+                    </div>
+                    <div class="post-actions-top">
+                        <button class="action-btn">
+                            <span>▶</span> Listen
+                        </button>
+                        <button class="action-btn" onclick="sharePost('${post.title}')">
+                            <span>↗</span> Share
+                        </button>
+                        <button class="action-btn">
+                            <span>⋯</span> More
+                        </button>
+                    </div>
+                    ${post.image ? `<img class="post-image" src="${post.image}" alt="Post image">` : ''}
+                    ${post.caption ? `<p class="post-caption">${post.caption}</p>` : ''}
+                    ${post.content ? `<div class="post-content">${post.content}</div>` : ''}
+                    <div class="post-actions-bottom">
+                        <button class="download-btn" onclick="downloadPost(${post.id})">💾 Save to Gallery</button>
+                        <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Check auth on load
+        checkAuth();
+    </script>
+</body>
+</html>
